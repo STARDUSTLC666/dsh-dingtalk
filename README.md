@@ -1,3 +1,5 @@
+[English](README.en.md)
+
 # dsh-dingtalk
 
 DeepSeek Harness 钉钉群机器人通知插件：让 agent 能**单向推送 Markdown / 纯文本消息到钉钉群**。纯插件实现，零核心改动，安装即可用。
