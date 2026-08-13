@@ -1,0 +1,17 @@
+# dsh-dingtalk: 钉钉群机器人单向通知工具（DeepSeek Harness 插件）。
+#
+# 本行随插件附带【空配置】安装，绝不弄崩启动；配置前调用任何 dingtalk_*
+# 工具都会返回明确的中文配置提示。请在你的 profile 的 cordis.patch.yml 里
+# 覆盖 tool-dingtalk 行（后层覆盖前层），例如：
+#
+#   - id: tool-dingtalk
+#     config:
+#       webhook: https://oapi.dingtalk.com/robot/send?access_token=你的token
+#       secret: SEC你的加签密钥   # 可选；也可用环境变量 DSH_DINGTALK_SECRET
+#
+# 获取方式：钉钉群 → 群设置 → 智能群助手 → 添加机器人 → 自定义（webhook），
+# 复制 webhook 地址；安全设置勾选「加签」，复制加签密钥（secret）。
+- insert:
+    - id: tool-dingtalk
+      name: dsh-dingtalk
+      config: {}

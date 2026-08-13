@@ -1,0 +1,59 @@
+{
+  "name": "dsh-dingtalk",
+  "version": "0.1.0",
+  "description": "钉钉群机器人单向通知工具（DeepSeek Harness 插件）：agent 推送 Markdown / 纯文本消息到钉钉群，支持加签安全模式。",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "prepublishOnly": "pnpm run build",
+    "test": "pnpm run build && node --test \"test/*.test.mjs\""
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "dsh",
+    "dingtalk",
+    "dingtalk-robot",
+    "webhook"
+  ],
+  "author": "dsh-community",
+  "license": "MIT",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^5.7.3"
+  },
+  "repository": {
+    "url": "https://github.com/STARDUSTLC666/dsh-dingtalk",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/STARDUSTLC666/dsh-dingtalk/issues"
+  },
+  "homepage": "https://github.com/STARDUSTLC666/dsh-dingtalk#readme"
+}
