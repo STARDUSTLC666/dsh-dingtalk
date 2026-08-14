@@ -38,19 +38,4 @@ jobs:
 
       - run: pnpm test
 
-      - name: OIDC diagnostic
-        run: |
-          echo "npm version: $(npm --version)"
-          echo "node version: $(node --version)"
-          echo "GITHUB_ACTIONS=$GITHUB_ACTIONS"
-          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then echo "id-token URL: present"; else echo "id-token URL: MISSING"; fi
-          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" ]; then echo "id-token TOKEN: present"; else echo "id-token TOKEN: MISSING"; fi
-
-      - name: Manual OIDC exchange
-        run: |
-          ID_TOKEN=$(curl -sS -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log(JSON.parse(d).value))") || { echo "id-token fetch FAILED"; exit 0; }
-          echo "id token acquired: ${ID_TOKEN:0:24}... (len ${#ID_TOKEN})"
-          RESP=$(curl -sS -w '\nHTTP_%{http_code}' -X POST -H "Authorization: Bearer $ID_TOKEN" -H 'content-type: application/json' -d '{}' "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/dsh-dingtalk")
-          echo "$RESP" | sed 's/npm_[A-Za-z0-9]\{8\}[A-Za-z0-9]*/npm_***REDACTED***/g' | tail -4
-
-      - run: npm publish --provenance --access public --loglevel verbose
+      - run: npm publish --provenance --access public
