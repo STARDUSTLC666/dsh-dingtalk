@@ -1,6 +1,5 @@
-# npm trusted publishing via GitHub Actions OIDC.
+# npm publish via GitHub Actions + granular access token (NPM_TOKEN repo secret).
 # Push a v* tag (matching package.json version) to publish: git tag v0.2.0 && git push --tags
-# No npm token required: trust is configured per-package on npmjs.com (Publishers -> GitHub Actions).
 name: publish.yml
 
 on:
@@ -10,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   publish:
@@ -23,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
       - name: Verify tag matches package version
@@ -38,4 +37,6 @@ jobs:
 
       - run: pnpm test
 
-      - run: npm publish --provenance --access public
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
