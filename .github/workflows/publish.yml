@@ -38,4 +38,9 @@ jobs:
 
       - run: pnpm test
 
-      - run: npm publish --provenance --access public
+      - name: OIDC diagnostic
+        run: |
+          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then echo "id-token URL: present"; else echo "id-token URL: MISSING"; fi
+          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" ]; then echo "id-token TOKEN: present"; else echo "id-token TOKEN: MISSING"; fi
+
+      - run: npm publish --provenance --access public --loglevel verbose
