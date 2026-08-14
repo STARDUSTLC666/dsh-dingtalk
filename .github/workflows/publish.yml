@@ -25,6 +25,11 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: OIDC claims diagnostic (temp)
+        run: |
+          ID_TOKEN=$(curl -sS -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log(JSON.parse(d).value))")
+          echo "$ID_TOKEN" | cut -d'.' -f2 | base64 -d 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{const j=JSON.parse(d);console.log('CLAIMS ' + JSON.stringify({repo:j.repository,owner:j.repository_owner,workflow:j.workflow,workflow_ref:j.workflow_ref,ref:j.ref,event:j.event_name,aud:j.aud}))}catch(e){console.log('CLAIM PARSE FAIL')}})"
+
       - name: Verify tag matches package version
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
