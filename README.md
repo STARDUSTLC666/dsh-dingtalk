@@ -1,6 +1,9 @@
 [English](README.en.md)
 
-# dsh-dingtalk
+`# dsh-dingtalk
+
+![npm version](https://img.shields.io/npm/v/dsh-dingtalk?label=npm&color=blue) ![npm downloads](https://img.shields.io/npm/dm/dsh-dingtalk) ![license](https://img.shields.io/npm/l/dsh-dingtalk) ![stars](https://img.shields.io/github/stars/STARDUSTLC666/dsh-dingtalk?style=social)
+
 
 DeepSeek Harness 钉钉群机器人通知插件：让 agent 能**单向推送 Markdown / 纯文本消息到钉钉群**。纯插件实现，零核心改动，安装即可用。
 
@@ -120,3 +123,4 @@ MIT。这是一个社区插件，与 DeepSeek 官方及钉钉官方无关；`@de
 - [dsh-calendar](https://github.com/STARDUSTLC666/dsh-calendar) — CalDAV 日历五件套
 - [dsh-dingtalk](https://github.com/STARDUSTLC666/dsh-dingtalk) — 钉钉群通知（零依赖）
 - [dsh-email](https://github.com/STARDUSTLC666/dsh-email) — 邮件六件套 + Web 设置页
+
