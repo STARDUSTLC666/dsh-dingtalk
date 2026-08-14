@@ -1,6 +1,8 @@
 [English](README.en.md)
 
-`# dsh-dingtalk
+# dsh-dingtalk
+
+> **让 agent 在钉钉群里说话**：Markdown / 纯文本通知，加签安全，零依赖。
 
 ![npm version](https://img.shields.io/npm/v/dsh-dingtalk?label=npm&color=blue) ![npm downloads](https://img.shields.io/npm/dm/dsh-dingtalk) ![license](https://img.shields.io/npm/l/dsh-dingtalk) ![stars](https://img.shields.io/github/stars/STARDUSTLC666/dsh-dingtalk?style=social)
 
