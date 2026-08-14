@@ -25,14 +25,14 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Manual exchange probe (temp)
+      - name: npm-style exchange + npm11 dry-run probe (temp)
         run: |
+          echo '--- curl with npm-style headers ---'
           ID_TOKEN=$(curl -sS -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log(JSON.parse(d).value))")
-          for pkg in dsh-dingtalk dsh-email dsh-calendar dsh-slack dsh-rss dsh-nonexistent-xyz; do
-            echo "== $pkg"
-            curl -sS -w ' [HTTP_%{http_code}]' -X POST -H "Authorization: Bearer $ID_TOKEN" -H 'content-type: application/json' -d '{}' "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/$pkg" | sed 's/npm_[A-Za-z0-9]\{8\}[A-Za-z0-9]*/npm_***REDACTED***/g'
-            echo ""
-          done
+          curl -sS -w ' [HTTP_%{http_code}]' -X POST -H "Authorization: Bearer $ID_TOKEN" -H 'npm-command: publish' -H 'npm-session: deadbeef0000' -H 'user-agent: npm/11.13.0 node/v22.19.0 linux x64 workspaces/false' -H 'content-type: application/json' -d '{}' "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/dsh-dingtalk" | sed 's/npm_[A-Za-z0-9]\{8\}[A-Za-z0-9]*/npm_***REDACTED***/g'
+          echo ''
+          echo '--- npx npm@11 dry-run with silly logs ---'
+          npx --yes npm@11.13.0 publish --dry-run --provenance --access public --loglevel silly 2>&1 | grep -i -E 'oidc|exchange|id.?token|provenance|ENEEDAUTH' | sed 's/npm_[A-Za-z0-9]\{8\}[A-Za-z0-9]*/npm_***REDACTED***/g' | tail -25
 
       - name: Verify tag matches package version
         run: |
