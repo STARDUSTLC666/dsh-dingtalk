@@ -86,7 +86,7 @@ sign = urlencode(base64(HmacSHA256(secret, stringToSign)))
 
 Identical to this plugin's `computeDingTalkSign`, equivalent to `urllib.parse.quote_plus(base64(...))` in the official Python example.
 
-## Known limitations (v0.1)
+## Known limitations
 
 - **One-way notification only**: no support for enterprise self-built apps, no receiving group messages / two-way bots (@robot replies, etc.); these are v0.2+ directions.
 - **No automatic workaround for custom keyword validation**: if the robot checks "Custom keywords" on DingTalk's side, messages must contain the keyword or DingTalk returns an error (errcode 310000 can also appear for this reason). This plugin attributes 310000 to signing; please also check the keyword setting.
