@@ -6,6 +6,8 @@
 
 ![npm version](https://img.shields.io/npm/v/dsh-dingtalk?label=npm&color=blue) ![npm downloads](https://img.shields.io/npm/dm/dsh-dingtalk) ![license](https://img.shields.io/npm/l/dsh-dingtalk) ![stars](https://img.shields.io/github/stars/STARDUSTLC666/dsh-dingtalk?style=social)
 
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+
 
 DeepSeek Harness 钉钉群机器人通知插件：让 agent 能**单向推送 Markdown / 纯文本消息到钉钉群**。纯插件实现，零核心改动，安装即可用。
 

@@ -1,5 +1,7 @@
 # dsh-dingtalk
 
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+
 DeepSeek Harness DingTalk group robot notification plugin: lets the agent **push Markdown / plain-text messages to a DingTalk group one-way**. Pure plugin implementation, zero core changes, works out of the box.
 
 Pure Node implementation, **cross-platform** (one codebase for Windows / macOS / Linux), depends only on `node:crypto` and the built-in `fetch` — no runtime dependencies, no native binaries.
