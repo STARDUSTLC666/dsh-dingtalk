@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "exclude": [],
+  "ignore": [
+    {
+      "ruleId": "SEC-203",
+      "file": "test/**",
+      "reason": "测试夹具中的 HMAC 密钥向量"
+    },
+    {
+      "ruleId": "SEC-304",
+      "file": "test/**",
+      "reason": "测试夹具中的签名向量"
+    }
+  ],
+  "failOn": "high"
+}
