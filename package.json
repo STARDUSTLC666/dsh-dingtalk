@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "钉钉群机器人单向通知工具（DeepSeek Harness 插件）：agent 推送 Markdown / 纯文本消息到钉钉群，支持加签安全模式。",
   "type": "module",
   "main": "lib/index.js",

@@ -27,10 +27,10 @@ test('每个已注册工具的 parameters 都是编译好的 JSON Schema（原�
   assert.deepEqual(text.parameters.required, ['content'])
 })
 
-test('apply 无需配置也注册两个工具（加载不失败）', () => {
+test('apply 无需配置也注册三个工具（加载不失败）', () => {
   const ctx = fakeCtx()
   apply(ctx, {})
-  assert.deepEqual(ctx.tools.defs.map(def => def.name).sort(), ['dingtalk_notify', 'dingtalk_text'])
+  assert.deepEqual(ctx.tools.defs.map(def => def.name).sort(), ['dingtalk_health', 'dingtalk_notify', 'dingtalk_text'])
 })
 
 test('未配置时 execute 返回中文配置提示而非崩溃', async () => {

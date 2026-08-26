@@ -105,6 +105,39 @@ export function apply(ctx: any, config: Config = {}): void {
       return { ok: true, msgtype: 'text' as const, title: '', errcode: result.errcode, errmsg: result.errmsg }
     },
   })
+
+  ctx.tools.register({
+    name: 'dingtalk_health',
+    description: 'dsh-dingtalk 自检：检查钉钉机器人 webhook 与加签密钥（secret）配置是否就绪（不发送任何消息）。遇到问题时先运行本工具定位。',
+    parameters: compileParameters({}),
+    output: {
+      schema: { type: 'object', additionalProperties: true },
+      render: (_args: unknown, value: unknown) => {
+        const rec = (value ?? {}) as Record<string, unknown>
+        const rawChecks = Array.isArray(rec.checks) ? rec.checks : []
+        const lines = ['dsh-dingtalk 自检' + (rec.ok === true ? '：正常。' : '：发现问题。')]
+        for (const item of rawChecks) {
+          const c = (item ?? {}) as Record<string, unknown>
+          lines.push('- ' + String(c.name) + '：' + (c.ok === true ? '✅ ' + String(c.detail ?? '') : '❌ ' + String(c.detail ?? '')))
+        }
+        return oneText(lines.join('\n'))
+      },
+    },
+    async execute() {
+      const checks: Array<Record<string, unknown>> = []
+      let ok = true
+      try {
+        const resolved = resolveDingTalkConfig(config)
+        checks.push({ name: 'webhook', ok: true, detail: '已配置' })
+        const secret = (resolved as { secret?: unknown }).secret
+        checks.push({ name: '加签密钥', ok: true, detail: typeof secret === 'string' && secret !== '' ? '已配置（加签模式）' : '未配置（关键词/白名单模式）' })
+      } catch (error) {
+        ok = false
+        checks.push({ name: 'webhook', ok: false, detail: error instanceof Error ? error.message : String(error) })
+      }
+      return { ok, plugin: 'dsh-dingtalk', checks }
+    },
+  })
 }
 
 export { resolveDingTalkConfig, DINGTALK_SECRET_ENV, DEFAULT_TIMEOUT_MS, clampInt } from './config.js'
