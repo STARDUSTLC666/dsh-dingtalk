@@ -24,6 +24,10 @@ DeepSeek Harness 钉钉群机器人通知插件：让 agent 能**单向推送 Ma
 
 > 帮我给钉钉群发一条消息：标题「构建完成」，正文「流水线 #123 已通过 ✅」。
 
+## 兼容性
+
+在 `@deepseek-ai/dsh@0.1.1-rc.2` 上验证（2026-08-26）。遵循 cordis 组合包补丁模型（`cordis.patch.yml` + `dsh.bundle.patch`），运行时不 import 任何 `@deepseek-ai/*` 内部模块。
+
 ## 安装
 
 ```sh
@@ -31,6 +35,15 @@ dsh plugin --profile web add dsh-dingtalk
 ```
 
 装好后重启 `dsh web`。插件自带空配置，**不会弄崩启动**；配置前调用任何 `dingtalk_*` 工具都会返回明确的中文配置提示。
+
+## 卸载
+
+```bash
+dsh plugin --profile web remove dsh-dingtalk
+```
+
+卸载后重启 Web 服务。如需彻底清理，可再手动删除自己 profile `cordis.patch.yml` 中覆盖的插件行。
+
 
 ## 第一步：拿到 webhook 与加签密钥
 
@@ -127,4 +140,3 @@ MIT。这是一个社区插件，与 DeepSeek 官方及钉钉官方无关；`@de
 - [dsh-calendar](https://github.com/STARDUSTLC666/dsh-calendar) — CalDAV 日历五件套
 - [dsh-dingtalk](https://github.com/STARDUSTLC666/dsh-dingtalk) — 钉钉群通知（零依赖）
 - [dsh-email](https://github.com/STARDUSTLC666/dsh-email) — 邮件六件套 + Web 设置页
-

@@ -17,6 +17,10 @@ Example:
 
 > Send a message to the DingTalk group: title "Build complete", body "Pipeline #123 passed ✅".
 
+## Compatibility
+
+Verified against `@deepseek-ai/dsh@0.1.1-rc.2` on 2026-08-26. Built for the cordis patch-bundle plugin model (`cordis.patch.yml` + `dsh.bundle.patch`). No runtime imports of `@deepseek-ai/*` internals.
+
 ## Installation
 
 ```sh
@@ -24,6 +28,15 @@ dsh plugin --profile web add dsh-dingtalk
 ```
 
 After installing, restart `dsh web`. The plugin ships with an empty config and **won't crash startup**; calling any `dingtalk_*` tool before configuration returns a clear Chinese configuration hint.
+
+## Uninstall
+
+```bash
+dsh plugin --profile web remove dsh-dingtalk
+```
+
+Then restart the web service. To clean up fully, also remove the plugin entry from your profile `cordis.patch.yml` if you overrode it.
+
 
 ## Step 1: Get the webhook and signing secret
 
