@@ -1,5 +1,7 @@
 # dsh-dingtalk
 
+![npm](https://img.shields.io/npm/v/dsh-dingtalk) ![downloads](https://img.shields.io/npm/dm/dsh-dingtalk) ![license](https://img.shields.io/github/license/STARDUSTLC666/dsh-dingtalk) ![stars](https://img.shields.io/github/stars/STARDUSTLC666/dsh-dingtalk?style=social)
+
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
 DeepSeek Harness DingTalk group robot notification plugin: lets the agent **push Markdown / plain-text messages to a DingTalk group one-way**. Pure plugin implementation, zero core changes, works out of the box.
