@@ -8,7 +8,6 @@
 
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
-
 DeepSeek Harness 钉钉群机器人通知插件：让 agent 能**单向推送 Markdown / 纯文本消息到钉钉群**。纯插件实现，零核心改动，安装即可用。
 
 纯 Node 实现，**全平台通用**（Windows / macOS / Linux 同一份代码），只依赖 `node:crypto` 与内置 `fetch`，无运行时依赖、无原生二进制。
@@ -28,10 +27,6 @@ DeepSeek Harness 钉钉群机器人通知插件：让 agent 能**单向推送 Ma
 
 > 帮我给钉钉群发一条消息：标题「构建完成」，正文「流水线 #123 已通过 ✅」。
 
-## 兼容性
-
-已在官方 `@deepseek-ai/dsh@0.1.5-rc.1`、Node `24.16.0` 上验证（2026-09-11）：18 个组件与 Modlens 同载，工具 schema、技能注册及离线只读调用检查通过。采用 `cordis.patch.yml` + `dsh.bundle.patch` 组合包模型。Node 要求与该版本 Harness 一致：22.19 及以上的 22.x，或 24 及以上。外部服务的实际业务操作需按各组件配置单独验证。
-
 ## 安装
 
 ```sh
@@ -47,7 +42,6 @@ dsh plugin --profile web remove dsh-dingtalk
 ```
 
 卸载后重启 Web 服务。如需彻底清理，可再手动删除自己 profile `cordis.patch.yml` 中覆盖的插件行。
-
 
 ## 第一步：拿到 webhook 与加签密钥
 
