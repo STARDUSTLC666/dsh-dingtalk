@@ -2,6 +2,8 @@
 
 [English](README.en.md)
 
+![dsh-dingtalk 鲸鱼娘插件封面](https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/assets/cover-whale-girl.png)
+
 把任务结果发送到钉钉群机器人的通知插件。
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://img.shields.io/npm/dm/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk)

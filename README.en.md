@@ -2,6 +2,8 @@
 
 [中文](README.md)
 
+![dsh-dingtalk whale girl plugin cover](https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/assets/cover-whale-girl.png)
+
 Send task notifications to a DingTalk group robot.
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://img.shields.io/npm/dm/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk)
