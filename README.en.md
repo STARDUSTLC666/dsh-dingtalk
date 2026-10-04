@@ -6,7 +6,7 @@
 
 Send task notifications to a DingTalk group robot.
 
-[![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://img.shields.io/npm/dm/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk)
+[![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
 ## What it does
 
