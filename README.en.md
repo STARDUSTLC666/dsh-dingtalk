@@ -8,6 +8,8 @@ Send task notifications to a DingTalk group robot.
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
+Feedback and contributions are welcome: report [issues](https://github.com/STARDUSTLC666/dsh-dingtalk/issues) or submit [pull requests](https://github.com/STARDUSTLC666/dsh-dingtalk/pulls).
+
 ## What it does
 
 - Send Markdown or plain-text group notifications.

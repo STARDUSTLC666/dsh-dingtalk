@@ -8,6 +8,8 @@
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
+欢迎使用，遇到问题或有改进建议，请提交 [issues](https://github.com/STARDUSTLC666/dsh-dingtalk/issues) 和 [PR](https://github.com/STARDUSTLC666/dsh-dingtalk/pulls)。
+
 ## 功能
 
 - 发送 Markdown 或纯文本群通知。
