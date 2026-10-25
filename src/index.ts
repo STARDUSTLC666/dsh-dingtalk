@@ -41,6 +41,11 @@ function oneText(text: string): TextBlock[] {
   return [{ type: 'text', text }]
 }
 
+function executionSignal(exec: unknown): AbortSignal | undefined {
+  const signal = (exec as { signal?: unknown } | null)?.signal
+  return signal instanceof AbortSignal ? signal : undefined
+}
+
 function renderNotify(value: DingTalkNotifyResult): TextBlock[] {
   if (value.msgtype === 'markdown') {
     return oneText('已通过钉钉机器人发送 Markdown 消息（标题「' + value.title + '」），钉钉返回 errcode=' + value.errcode + '，errmsg=' + value.errmsg)
@@ -79,11 +84,12 @@ export function apply(ctx: any, config: Config = {}): void {
       schema: notifySchema,
       render: (_args: unknown, value: unknown) => renderNotify(value as DingTalkNotifyResult),
     },
-    async execute(rawArgs: unknown) {
+    timeoutMs: 65000,
+    async execute(rawArgs: unknown, exec: unknown) {
       const args = rawArgs as DingTalkNotifyArgs
       if (typeof args.title !== 'string' || args.title.trim() === '') throw new Error('title 不能为空')
       if (typeof args.text !== 'string' || args.text.trim() === '') throw new Error('text 不能为空')
-      const result = await getClient().sendMarkdown(args.title, args.text)
+      const result = await getClient().sendMarkdown(args.title, args.text, executionSignal(exec))
       return { ok: true, msgtype: 'markdown' as const, title: args.title, errcode: result.errcode, errmsg: result.errmsg }
     },
   })
@@ -98,10 +104,11 @@ export function apply(ctx: any, config: Config = {}): void {
       schema: notifySchema,
       render: (_args: unknown, value: unknown) => renderNotify(value as DingTalkNotifyResult),
     },
-    async execute(rawArgs: unknown) {
+    timeoutMs: 65000,
+    async execute(rawArgs: unknown, exec: unknown) {
       const args = rawArgs as DingTalkTextArgs
       if (typeof args.content !== 'string' || args.content.trim() === '') throw new Error('content 不能为空')
-      const result = await getClient().sendText(args.content)
+      const result = await getClient().sendText(args.content, executionSignal(exec))
       return { ok: true, msgtype: 'text' as const, title: '', errcode: result.errcode, errmsg: result.errmsg }
     },
   })

@@ -27,8 +27,8 @@ export declare class DingTalkClient {
     private readonly fetchImpl;
     constructor(options: DingTalkClientOptions);
     /** 发送 Markdown 消息：{ msgtype: 'markdown', markdown: { title, text } } */
-    sendMarkdown(title: string, text: string): Promise<DingTalkSendResult>;
+    sendMarkdown(title: string, text: string, signal?: AbortSignal): Promise<DingTalkSendResult>;
     /** 发送纯文本消息：{ msgtype: 'text', text: { content } } */
-    sendText(content: string): Promise<DingTalkSendResult>;
+    sendText(content: string, signal?: AbortSignal): Promise<DingTalkSendResult>;
     private post;
 }

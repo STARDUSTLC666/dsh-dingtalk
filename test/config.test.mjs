@@ -1,6 +1,14 @@
-import test from 'node:test'
+import test, { beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import { resolveDingTalkConfig, DINGTALK_SECRET_ENV, clampInt } from '../lib/index.js'
+
+// User machines may already have real credentials. Configuration fixtures never use them.
+const originalSecret = process.env[DINGTALK_SECRET_ENV]
+beforeEach(() => { delete process.env[DINGTALK_SECRET_ENV] })
+afterEach(() => {
+  if (originalSecret === undefined) delete process.env[DINGTALK_SECRET_ENV]
+  else process.env[DINGTALK_SECRET_ENV] = originalSecret
+})
 
 test('webhook 必填，缺失时抛出中文配置指引', () => {
   assert.throws(() => resolveDingTalkConfig({}), /dsh-dingtalk 未配置/)

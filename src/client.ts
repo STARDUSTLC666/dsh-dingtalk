@@ -55,53 +55,59 @@ export class DingTalkClient {
   }
 
   /** 发送 Markdown 消息：{ msgtype: 'markdown', markdown: { title, text } } */
-  async sendMarkdown(title: string, text: string): Promise<DingTalkSendResult> {
-    return this.post({ msgtype: 'markdown', markdown: { title, text } })
+  async sendMarkdown(title: string, text: string, signal?: AbortSignal): Promise<DingTalkSendResult> {
+    return this.post({ msgtype: 'markdown', markdown: { title, text } }, signal)
   }
 
   /** 发送纯文本消息：{ msgtype: 'text', text: { content } } */
-  async sendText(content: string): Promise<DingTalkSendResult> {
-    return this.post({ msgtype: 'text', text: { content } })
+  async sendText(content: string, signal?: AbortSignal): Promise<DingTalkSendResult> {
+    return this.post({ msgtype: 'text', text: { content } }, signal)
   }
 
-  private async post(payload: unknown): Promise<DingTalkSendResult> {
+  private async post(payload: unknown, signal?: AbortSignal): Promise<DingTalkSendResult> {
+    signal?.throwIfAborted()
     const url = signedUrl(this.webhook, this.secret || undefined)
+    const parsedUrl = new URL(url)
+    const redact = (text: string) => [url, this.webhook, this.secret, parsedUrl.searchParams.get('access_token'), parsedUrl.searchParams.get('sign')]
+      .filter((value): value is string => typeof value === 'string' && value !== '')
+      .reduce((safe, value) => safe.replaceAll(value, '[已隐藏]').replaceAll(encodeURIComponent(value), '[已隐藏]'), text)
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), this.timeoutMs)
-    let response: FetchLikeResponse
+    const requestSignal = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal
+    const timer = setTimeout(() => controller.abort(new Error('请求超时')), this.timeoutMs)
     try {
-      response = await this.fetchImpl(url, {
+      const response = await this.fetchImpl(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        signal: controller.signal,
+        signal: requestSignal,
       })
+      requestSignal.throwIfAborted()
+      if (!response.ok) {
+        const body = await response.text().catch(() => '')
+        requestSignal.throwIfAborted()
+        throw new DingTalkError('钉钉机器人返回 HTTP ' + response.status + '：' + body.slice(0, 200))
+      }
+      let body: unknown
+      try { body = await response.json() }
+      catch (error) {
+        requestSignal.throwIfAborted()
+        throw new DingTalkError('钉钉机器人返回非 JSON 响应（HTTP ' + response.status + '）')
+      }
+      requestSignal.throwIfAborted()
+      const result = body as DingTalkSendResult
+      if (!Number.isSafeInteger(result?.errcode)) throw new DingTalkError('钉钉机器人返回格式异常：缺少 errcode')
+      if (result.errcode !== 0) throw new DingTalkError(dingTalkErrorMessage(result.errcode, result.errmsg ?? ''), result.errcode)
+      return result
     } catch (error) {
+      signal?.throwIfAborted()
+      if (controller.signal.aborted) throw new DingTalkError('钉钉机器人请求超时，尚未确认远端是否收到；请先核对群消息，再决定是否重发。')
+      if (error instanceof DingTalkError) throw new DingTalkError(redact(error.message), error.errcode)
       const message = error instanceof Error ? error.message : String(error)
-      const hint = /abort/i.test(message) ? '（请求超时）' : ''
-      throw new DingTalkError('钉钉机器人请求失败' + hint + '：' + message)
+      const safe = redact(message)
+      throw new DingTalkError('钉钉机器人请求失败：' + safe)
     } finally {
       clearTimeout(timer)
     }
 
-    if (!response.ok) {
-      const body = await response.text().catch(() => '')
-      throw new DingTalkError('钉钉机器人返回 HTTP ' + response.status + '：' + body.slice(0, 200))
-    }
-
-    let body: unknown
-    try {
-      body = await response.json()
-    } catch {
-      throw new DingTalkError('钉钉机器人返回非 JSON 响应（HTTP ' + response.status + '）')
-    }
-    const result = body as DingTalkSendResult
-    if (typeof result?.errcode !== 'number') {
-      throw new DingTalkError('钉钉机器人返回格式异常：缺少 errcode')
-    }
-    if (result.errcode !== 0) {
-      throw new DingTalkError(dingTalkErrorMessage(result.errcode, result.errmsg ?? ''), result.errcode)
-    }
-    return result
   }
 }

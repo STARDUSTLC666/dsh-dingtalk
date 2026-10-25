@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "把任务结果发送到钉钉群机器人的通知插件。",
   "type": "module",
   "main": "lib/index.js",

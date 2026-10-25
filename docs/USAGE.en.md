@@ -2,6 +2,10 @@
 
 [Overview](../README.en.md) · [Changelog](../CHANGELOG.md) · [Validation](VALIDATION.md)
 
+## Cancellation and delivery
+
+Cancellation aborts the HTTP wait, including response-body reads. A timeout does not prove the message was not received: check the group before retrying. The plugin never retries automatically and redacts robot credentials/signatures from errors.
+
 ## Tools
 
 | Tool | Purpose |
