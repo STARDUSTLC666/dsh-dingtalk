@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "把任务结果发送到钉钉群机器人的通知插件。",
   "type": "module",
   "main": "lib/index.js",
@@ -72,6 +72,6 @@
   },
   "homepage": "https://github.com/STARDUSTLC666/dsh-dingtalk#readme",
   "dependencies": {
-    "@stardustlc/dsh-updates": "0.1.1"
+    "@stardustlc/dsh-updates": "0.1.2"
   }
 }
