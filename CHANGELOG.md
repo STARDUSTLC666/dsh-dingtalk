@@ -2,6 +2,12 @@
 
 [返回简介](README.md) · [使用说明](docs/USAGE.md) · [验证记录](docs/VALIDATION.md)
 
+## 0.3.0 (2026-10-26)
+
+- Add this plugin’s own update controls and independent preferences. Automatic installation stays off until explicitly enabled.
+- Confirm manual installs, preserve local sources and disabled state, pause for tasks or unsaved changes, and use native DSH recovery without forced restarts.
+- Require the public DSH 0.2.1-rc.3 update APIs; Suite components remain managed through Suite.
+
 ## 0.2.3（2026-10-26）
 
 - 宿主取消信号传递到发送请求，超时覆盖响应体读取，错误脱敏机器人凭据与签名；超时明确提示送达状态未知，避免盲目重复发送。

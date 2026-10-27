@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "把任务结果发送到钉钉群机器人的通知插件。",
   "type": "module",
   "main": "lib/index.js",
@@ -10,7 +10,11 @@
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
     },
-    "./client": "./lib/client.js",
+    "./client": {
+      "types": "./lib/client.d.ts",
+      "node": "./lib/client.js",
+      "default": "./lib/update-client.js"
+    },
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
   },
@@ -23,7 +27,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/build-updates.mjs",
     "prepublishOnly": "pnpm run build",
     "test": "pnpm run build && node --test \"test/*.test.mjs\""
   },
@@ -39,11 +43,20 @@
   "license": "MIT",
   "packageManager": "pnpm@11.7.0",
   "engines": {
-    "node": "^22.19.0 || >=24.0.0"
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.1-rc.3"
   },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
     }
   },
   "devDependencies": {
@@ -57,5 +70,8 @@
   "bugs": {
     "url": "https://github.com/STARDUSTLC666/dsh-dingtalk/issues"
   },
-  "homepage": "https://github.com/STARDUSTLC666/dsh-dingtalk#readme"
+  "homepage": "https://github.com/STARDUSTLC666/dsh-dingtalk#readme",
+  "dependencies": {
+    "@stardustlc/dsh-updates": "0.1.0"
+  }
 }

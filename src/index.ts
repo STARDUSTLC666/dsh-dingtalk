@@ -1,3 +1,4 @@
+import { registerUpdates } from '@stardustlc/dsh-updates'
 import { resolveDingTalkConfig, type DingTalkConfig } from './config.js'
 import { DingTalkClient } from './client.js'
 import type { DingTalkNotifyArgs, DingTalkNotifyResult, DingTalkTextArgs } from './types.js'
@@ -54,6 +55,8 @@ function renderNotify(value: DingTalkNotifyResult): TextBlock[] {
 }
 
 export function apply(ctx: any, config: Config = {}): void {
+  registerUpdates(ctx, { name: "dsh-dingtalk" })
+
   let client: DingTalkClient | null = null
   let fingerprint = ''
   const getClient = (): DingTalkClient => {
