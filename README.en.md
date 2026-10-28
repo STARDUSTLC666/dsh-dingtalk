@@ -4,7 +4,7 @@
 
 ![dsh-dingtalk whale girl plugin cover](https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/assets/cover-whale-girl.png)
 
-Send task notifications to a DingTalk group robot.
+Send DSH task results to a DingTalk custom group robot as text or Markdown. Configure your robot URL and signing options, then check the connection before sending.
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 

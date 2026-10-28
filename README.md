@@ -4,7 +4,7 @@
 
 ![dsh-dingtalk 鲸鱼娘插件封面](https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/assets/cover-whale-girl.png)
 
-把任务结果发送到钉钉群机器人的通知插件。
+把 DSH 中的任务结果发送到钉钉自定义群机器人，支持纯文本和 Markdown 通知。填写自己的机器人地址与签名配置后，可先自检再发送。
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
