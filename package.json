@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "DSH 钉钉通知：向自定义群机器人发送文本或 Markdown，支持签名配置与自检。欢迎提交 issues 和 PR。",
   "type": "module",
   "main": "lib/index.js",

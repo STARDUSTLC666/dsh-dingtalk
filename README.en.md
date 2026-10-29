@@ -6,7 +6,9 @@
 
 Send DSH task results to a DingTalk custom group robot as text or Markdown. Configure your robot URL and signing options, then check the connection before sending.
 
-[![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
+[![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk) [![total downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-total-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
+
+[Download statistics](https://github.com/STARDUSTLC666/dsh-suite/blob/npm-downloads/README.md)
 
 Feedback and contributions are welcome: report [issues](https://github.com/STARDUSTLC666/dsh-dingtalk/issues) or submit [pull requests](https://github.com/STARDUSTLC666/dsh-dingtalk/pulls).
 
@@ -28,7 +30,10 @@ For the web version, replace `desktop` with `web`. Restart DSH after installatio
 
 ## Start using it
 
-Configure the robot webhook and signing secret, then ask to send a result summary to your group.
+1. Create a custom robot in your DingTalk group and obtain its webhook and signing secret.
+2. Enter the configuration in DSH plugin settings and run the configuration check.
+3. Verify a simple notification in your own test group before preparing the real message.
+4. Provide the content and target group, confirm sending, then check the text or Markdown in DingTalk.
 
 ## Requirements and configuration
 

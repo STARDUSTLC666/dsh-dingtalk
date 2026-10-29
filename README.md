@@ -6,7 +6,9 @@
 
 把 DSH 中的任务结果发送到钉钉自定义群机器人，支持纯文本和 Markdown 通知。填写自己的机器人地址与签名配置后，可先自检再发送。
 
-[![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
+[![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk) [![total downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-total-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
+
+[下载统计说明](https://github.com/STARDUSTLC666/dsh-suite/blob/npm-downloads/README.md)
 
 欢迎使用，遇到问题或有改进建议，请提交 [issues](https://github.com/STARDUSTLC666/dsh-dingtalk/issues) 和 [PR](https://github.com/STARDUSTLC666/dsh-dingtalk/pulls)。
 
@@ -28,7 +30,10 @@ dsh plugin --profile desktop add dsh-dingtalk
 
 ## 开始使用
 
-配置群机器人 webhook 和加签密钥后，可说：“把这份结果摘要发到钉钉群。”
+1. 在自己的钉钉群创建自定义机器人，取得 webhook 和加签密钥。
+2. 在 DSH 插件设置中填写配置，先执行配置自检。
+3. 在自己的测试群确认一条简单通知能送达，再准备正式消息。
+4. 给助手消息内容和目标群，确认后发送，并在钉钉检查收到的文本或 Markdown。
 
 ## 依赖与配置
 
