@@ -1,32 +1,35 @@
-# dsh-dingtalk
+[简体中文](README.md) · **English**
 
-[中文](README.md)
+# DingTalk
 
-![dsh-dingtalk whale girl plugin cover](https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/assets/cover-whale-girl.png)
-
-Send DSH task results to a DingTalk custom group robot as text or Markdown. Configure your robot URL and signing options, then check the connection before sending.
+**Send DSH task results to your DingTalk group.**
 
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk) [![total downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-total-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
-[Download statistics](https://github.com/STARDUSTLC666/dsh-suite/blob/npm-downloads/README.md)
+**[Install](#install) · [Workflow](#start-using-it) · [Full guide](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/REFERENCE.en.md)**
 
-Feedback and contributions are welcome: report [issues](https://github.com/STARDUSTLC666/dsh-dingtalk/issues) or submit [pull requests](https://github.com/STARDUSTLC666/dsh-dingtalk/pulls).
+<picture>
+  <source media="(prefers-color-scheme: dark) and (max-width: 640px)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/docs/assets/intro/workflow-en-mobile-dark.svg">
+  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/docs/assets/intro/workflow-en-mobile-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/docs/assets/intro/workflow-en-dark.svg">
+  <img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-dingtalk/main/docs/assets/intro/workflow-en-light.svg" alt="Send DSH task results to your DingTalk group. · workflow illustration" width="100%">
+</picture>
 
-## What it does
+## Features
 
-- Send Markdown or plain-text group notifications.
-- Support signed robot requests.
-- Check configuration and explain common errors.
+- Send plain-text or Markdown notifications.
+- Use signing with your own robot configuration.
+- Check configuration and test before sending real notices.
 
 ## Install
 
-In DSH Desktop, install `dsh-dingtalk` from the Plugins panel. If the bundled dsh command is available:
+Open **Plugins** in the DSH desktop app and install `dsh-dingtalk`. If the CLI is available:
 
 ```bash
 dsh plugin --profile desktop add dsh-dingtalk
 ```
 
-For the web version, replace `desktop` with `web`. Restart DSH after installation.
+For the web profile, replace `desktop` with `web`. Restart that DSH profile after installation. The package’s DSH requirement is `>=0.2.1-rc.3`.
 
 ## Start using it
 
@@ -35,25 +38,33 @@ For the web version, replace `desktop` with `web`. Restart DSH after installatio
 3. Verify a simple notification in your own test group before preparing the real message.
 4. Provide the content and target group, confirm sending, then check the text or Markdown in DingTalk.
 
-## Requirements and configuration
+Example request：
 
-Requires a DingTalk robot webhook. This plugin provides one-way notifications.
+> Check my DingTalk robot configuration and prepare a task-complete notice for review before sending.
 
-Detailed configuration, tool arguments and troubleshooting are in the [usage guide](docs/USAGE.en.md). For standalone development, follow the Node requirement in [package.json](package.json).
+## Before you start
 
-## Documentation
+Requires your own group robot webhook. Verify delivery in a test group first.
 
-- [Usage and troubleshooting](docs/USAGE.en.md)
-- [Changelog](CHANGELOG.md)
-- [Validation scope and history](docs/VALIDATION.md)
-- [Report a problem or suggest a feature](https://github.com/STARDUSTLC666/dsh-dingtalk/issues)
+Configuration, detailed tools and troubleshooting: [full reference](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/REFERENCE.en.md).
 
 ## Plugin updates
 
-Requires DSH 0.2.1-rc.3 or newer. Update controls sit at the bottom of the existing workbench, or native plugin details for plugins without a workbench. Checks, release notes and preferences expand in place, with no separate update page or settings menu. Automatic checks are on by default; **automatic installation is off by default**. Only explicit opt-in permits compatible stable patches while idle with no unsaved changes. Preferences are independent, with per-plugin disable, deferral and ignore controls. No forced DSH restart or upgrade, and local-source installations stay unchanged. Suite components explain and operate on the whole Suite in the same footer.
+Check updates at the bottom of the workbench or native plugin details. Automatic checks are on by default; **automatic installation is off**. You choose whether to install and when to restart. Suite-managed components update with their bundle. [Update behavior](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/REFERENCE.en.md).
 
-Older releases need one manual update in native plugin management to acquire these controls. Publishing to npm does not replace an existing user installation.
+## Documentation
+
+- [Full usage, configuration and limits](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/REFERENCE.en.md)
+- [Release notes](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/CHANGELOG.md)
+- [Validation scope and history](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/VALIDATION.md)
+
+## Feedback and contributions
+
+If the plugin helps, a Star makes it easier for others to discover. Report problems or suggest improvements in [Issues](https://github.com/STARDUSTLC666/dsh-dingtalk/issues); code and documentation [PRs](https://github.com/STARDUSTLC666/dsh-dingtalk/pulls) are welcome. Include versions and reproduction steps, and remove credentials from reports.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/LICENSE)
+
+<a id="what-it-does"></a>
+<a id="requirements-and-configuration"></a>

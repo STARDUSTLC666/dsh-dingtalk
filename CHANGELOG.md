@@ -1,9 +1,16 @@
 # 更新记录
 
-## 0.3.7 (2026-11-03)
+## 0.3.8 (2026-11-03)
 
 - health 校验 webhook 形状并显示 secret 来源，仍不触网。
 - Health validates webhook shape and shows where the secret comes from without sending messages.
+
+## 0.3.7 (2026-10-30)
+
+- 重整中英文首页：用途、三步流程图、安装入口与操作示例；详细配置与边界集中到完整说明。
+- 保留下载统计、独立更新选择、问题反馈和贡献入口；原封面与运行功能保留。
+- Refresh bilingual landing pages, workflow artwork, quick starts and reference navigation.
+
 
 ## 0.3.6 (2026-10-30)
 
