@@ -1,5 +1,10 @@
 # 更新记录
 
+## 0.3.7 (2026-11-03)
+
+- health 校验 webhook 形状并显示 secret 来源，仍不触网。
+- Health validates webhook shape and shows where the secret comes from without sending messages.
+
 ## 0.3.6 (2026-10-30)
 
 - 原生插件列表与详情新增专门生成的鲸鱼娘图标：大头像、独立功能符号、透明留白，适合 30 / 36 px 显示；原封面保留。
