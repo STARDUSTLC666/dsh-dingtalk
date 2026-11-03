@@ -36,6 +36,28 @@ export function resolveDingTalkConfig(config: DingTalkConfig | undefined): Resol
   }
 }
 
+/**
+ * 校验 webhook 形态（纯本地判断，不发网络请求）。
+ *
+ * 只判空会把「粘错 token」「少了 access_token」「用了 http」当成已配置，
+ * 直到真正发送失败才暴露；这里按钉钉机器人地址的真实结构逐项给出原因。
+ */
+export function describeWebhookProblem(webhook: string): string | undefined {
+  if (webhook === '') return '未配置 webhook'
+  let url: URL
+  try {
+    url = new URL(webhook)
+  } catch {
+    return 'webhook 不是合法 URL（应形如 https://oapi.dingtalk.com/robot/send?access_token=...）'
+  }
+  if (url.protocol !== 'https:') return 'webhook 必须使用 https（当前 ' + url.protocol + '//）'
+  if (!/^(?:[a-z0-9-]+\.)*oapi\.dingtalk\.com$/i.test(url.hostname)) return 'webhook 主机不是 oapi.dingtalk.com（当前 ' + url.hostname + '）'
+  if (url.pathname !== '/robot/send') return 'webhook 路径应为 /robot/send（当前 ' + url.pathname + '）'
+  const token = url.searchParams.get('access_token')
+  if (token === null || token.trim() === '') return 'webhook 缺少 access_token 参数'
+  return undefined
+}
+
 export function clampInt(value: unknown, fallback: number, min: number, max: number): number {
   const n = typeof value === 'number' ? Math.trunc(value) : fallback
   if (!Number.isFinite(n)) return fallback

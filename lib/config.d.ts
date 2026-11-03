@@ -18,4 +18,11 @@ export interface ResolvedDingTalkConfig {
  * 只解析、不失败：secret 可选，未配置加签则不加签。
  */
 export declare function resolveDingTalkConfig(config: DingTalkConfig | undefined): ResolvedDingTalkConfig;
+/**
+ * 校验 webhook 形态（纯本地判断，不发网络请求）。
+ *
+ * 只判空会把「粘错 token」「少了 access_token」「用了 http」当成已配置，
+ * 直到真正发送失败才暴露；这里按钉钉机器人地址的真实结构逐项给出原因。
+ */
+export declare function describeWebhookProblem(webhook: string): string | undefined;
 export declare function clampInt(value: unknown, fallback: number, min: number, max: number): number;

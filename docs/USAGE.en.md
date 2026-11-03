@@ -119,6 +119,19 @@ pnpm run build   # tsc → lib/
 pnpm test        # 构建 + node --test（加签算法/配置解析/客户端封装/注册与中文报错）
 ```
 
+## Troubleshooting
+
+Run `dingtalk_health` first: it validates the webhook shape and signing config locally (no messages, no network calls).
+
+| Symptom | Usual cause | What to do |
+| :-- | :-- | :-- |
+| `dsh-dingtalk 未配置：webhook …` | No webhook configured | Override the `tool-dingtalk` row in the profile's `cordis.patch.yml` with the full URL, then restart |
+| Health reports a missing `access_token` or a non-DingTalk host | URL copied incompletely or from elsewhere | Re-copy the full webhook from the DingTalk group's custom robot settings |
+| Response `310000` | Sign mismatch, or the robot also enforces a keyword | Check `secret` (prefer the `DSH_DINGTALK_SECRET` env var); in keyword mode the message must contain the keyword |
+| Response `120001` | `access_token` expired or reset | Re-copy the robot webhook and update the config |
+| Request times out | Slow network or proxy | Check the group first to see whether the message arrived before resending; raise `timeoutMs` if needed |
+| Message arrives but renders badly | Markdown dialect or length limits | Simplify the body; DingTalk caps a single message, so split long content |
+
 ## License
 
 MIT. This is a community plugin, not affiliated with DeepSeek or DingTalk; `@deepseek-ai/*` is an officially reserved namespace.

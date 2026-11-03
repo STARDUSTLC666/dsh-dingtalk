@@ -102,6 +102,19 @@ sign = urlencode(base64(HmacSHA256(secret, stringToSign)))
 - **消息类型**：目前只支持 Markdown（`dingtalk_notify`）与纯文本（`dingtalk_text`）两种；图片/Link/FeedCard/ActionCard 等类型后续再加。
 - **Markdown 渲染**：钉钉机器人 Markdown 语法与标准 Markdown 略有差异（如标题、链接），请按钉钉语法书写。
 
+## 故障排查
+
+先运行 `dingtalk_health`：它只在本地校验 webhook 形态与加签配置（不发消息、不触网）。
+
+| 现象 | 常见原因 | 处理 |
+| :-- | :-- | :-- |
+| `dsh-dingtalk 未配置：webhook …` | 没填 webhook | 在 profile 的 `cordis.patch.yml` 覆盖 `tool-dingtalk` 行，填完整地址后重启 |
+| 自检提示 `缺少 access_token` / `主机不是 oapi.dingtalk.com` | 地址复制不全，或粘贴了别的 URL | 从钉钉群「自定义机器人」设置里重新复制完整 webhook |
+| 返回 `310000` | 加签不匹配，或机器人同时启用了「自定义关键词」 | 核对 `secret`（建议环境变量 `DSH_DINGTALK_SECRET`）；关键词模式要保证消息包含关键词 |
+| 返回 `120001` | access_token 失效或被重置 | 重新复制机器人 webhook 覆盖配置 |
+| 请求超时 | 网络慢或代理问题 | 先核对群消息是否已收到，再决定是否重发；必要时调大 `timeoutMs` |
+| 消息发出但排版不对 | Markdown 语法或长度限制 | 精简正文；钉钉单条消息有长度上限，过长请分段发送 |
+
 ## 错误码速查
 
 | errcode | 含义 | 建议 |
