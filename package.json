@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "DeepSeek Harness 钉钉群通知插件：发送文本与 Markdown 消息，支持加签校验、凭证脱敏与配置自检。欢迎提交 issues 和 PR。",
   "type": "module",
   "main": "lib/index.js",
@@ -41,7 +41,13 @@
     "dsh",
     "dingtalk",
     "dingtalk-robot",
-    "webhook"
+    "webhook",
+    "deepseek",
+    "ai-agent",
+    "bot",
+    "notification",
+    "钉钉",
+    "机器人"
   ],
   "author": "stardustlc",
   "license": "MIT",
@@ -72,7 +78,7 @@
   },
   "homepage": "https://github.com/STARDUSTLC666/dsh-dingtalk#readme",
   "dependencies": {
-    "@stardustlc/dsh-updates": "0.2.1"
+    "@stardustlc/dsh-updates": "0.2.2"
   },
   "icon": "./assets/plugin-icon.webp"
 }
