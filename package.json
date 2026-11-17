@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "DSH 钉钉通知：向自定义群机器人发送文本或 Markdown，支持签名配置与自检。欢迎提交 issues 和 PR。",
   "type": "module",
   "main": "lib/index.js",
@@ -52,12 +52,7 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "platform": "web",
-      "inject": [
-        "@deepseek-ai/dsh-client-ui-settings",
-        "@deepseek-ai/dsh-client-ui-layout",
-        "@deepseek-ai/dsh-client-ui-sidebar"
-      ]
+      "platform": "web"
     }
   },
   "devDependencies": {
@@ -73,7 +68,7 @@
   },
   "homepage": "https://github.com/STARDUSTLC666/dsh-dingtalk#readme",
   "dependencies": {
-    "@stardustlc/dsh-updates": "0.1.4"
+    "@stardustlc/dsh-updates": "0.2.0"
   },
   "icon": "./assets/plugin-icon.webp"
 }
