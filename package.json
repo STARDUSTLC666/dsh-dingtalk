@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "DSH 钉钉通知：向自定义群机器人发送文本或 Markdown，支持签名配置与自检。欢迎提交 issues 和 PR。",
   "type": "module",
   "main": "lib/index.js",
@@ -16,7 +16,9 @@
       "default": "./lib/update-client.js"
     },
     "./cordis.patch.yml": "./cordis.patch.yml",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./assets/plugin-icon.webp"
   },
   "files": [
     "lib",
@@ -25,7 +27,8 @@
     "README.en.md",
     "docs",
     "CHANGELOG.md",
-    "assets/plugin-icon.webp"
+    "assets/plugin-icon.webp",
+    "locale"
   ],
   "scripts": {
     "build": "tsc && node scripts/build-updates.mjs",
@@ -48,6 +51,7 @@
     "dsh": ">=0.2.2-rc.3"
   },
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     },

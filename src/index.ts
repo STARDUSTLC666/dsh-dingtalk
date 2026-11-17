@@ -80,7 +80,13 @@ export function apply(ctx: any, config: Config = {}): void {
     ctx.logger?.warn?.('[dsh-dingtalk] ' + (error instanceof Error ? error.message : '未配置钉钉机器人'))
   }
 
-  ctx.tools.register({
+  const disposers: Array<() => void> = []
+  const registerTool = (definition: Record<string, unknown>) => {
+    const dispose = ctx.tools.register(definition)
+    if (typeof dispose === 'function') disposers.push(dispose)
+  }
+
+  registerTool({
     name: 'dingtalk_notify',
     description: '向配置的钉钉群发送一条 Markdown 消息（单向通知）。title 为标题，text 为 Markdown 正文；需先在 profile 的 cordis.patch.yml 配置 webhook（与可选 secret 加签密钥）。',
     parameters: compileParameters({
@@ -101,7 +107,7 @@ export function apply(ctx: any, config: Config = {}): void {
     },
   })
 
-  ctx.tools.register({
+  registerTool({
     name: 'dingtalk_text',
     description: '向配置的钉钉群发送一条纯文本消息（单向通知）。',
     parameters: compileParameters({
@@ -120,8 +126,9 @@ export function apply(ctx: any, config: Config = {}): void {
     },
   })
 
-  ctx.tools.register({
+  registerTool({
     name: 'dingtalk_health',
+    isConcurrencySafe: () => true,
     description: 'dsh-dingtalk 自检：检查钉钉机器人 webhook 与加签密钥（secret）配置是否就绪（不发送任何消息）。遇到问题时先运行本工具定位。',
     parameters: compileParameters({}),
     output: {
@@ -168,6 +175,15 @@ export function apply(ctx: any, config: Config = {}): void {
       return { ok, plugin: 'dsh-dingtalk', checks }
     },
   })
+
+  const teardown = () => {
+    for (const dispose of disposers) dispose()
+  }
+  if (typeof ctx.effect === 'function') {
+    ctx.effect(() => teardown, 'dingtalk.tools()')
+  } else if (typeof ctx.on === 'function') {
+    ctx.on('dispose', teardown)
+  }
 }
 
 export { resolveDingTalkConfig, describeWebhookProblem, DINGTALK_SECRET_ENV, DEFAULT_TIMEOUT_MS, clampInt } from './config.js'

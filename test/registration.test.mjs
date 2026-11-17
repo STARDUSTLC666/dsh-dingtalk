@@ -100,3 +100,16 @@ test('execute 将钉钉 errcode 错误映射为中文并抛出', async () => {
     globalThis.fetch = oldFetch
   }
 })
+
+test('Cordis 4 ctx.effect 卸载时清理全部已注册工具', () => {
+  const active = new Set()
+  const effects = []
+  apply({
+    tools: { register(def) { active.add(def.name); return () => active.delete(def.name) } },
+    effect(fn) { effects.push(fn()) },
+    logger: { warn() {} },
+  }, CONFIG)
+  assert.equal(active.size, 3)
+  for (const dispose of effects) dispose?.()
+  assert.equal(active.size, 0)
+})
