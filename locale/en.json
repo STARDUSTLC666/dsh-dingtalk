@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "DingTalk",
-    "description": "Send Markdown and plain-text task notifications to DingTalk custom group webhooks with HMAC-SHA256 signing and secret redaction."
+    "description": "Send Markdown and plain-text task notifications to DingTalk custom group webhooks with HMAC-SHA256 signing, secret redaction, and health checks."
   }
 }

@@ -4,6 +4,8 @@
 
 **Send DSH task results to your DingTalk group.**
 
+DingTalk custom webhook notification plugin for DeepSeek Harness (`>=0.2.2-rc.3`): sends plain-text and Markdown messages with HMAC-SHA256 signing, secret redaction, health checks, and Cordis hot-reload cleanup.
+
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk) [![total downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-total-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
 **[Install](#install) · [Workflow](#start-using-it) · [Full guide](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/REFERENCE.en.md)**

@@ -4,6 +4,8 @@
 
 **把 DSH 的任务结果送到钉钉群。**
 
+DeepSeek Harness（`>=0.2.2-rc.3`）钉钉群通知插件：面向自定义群机器人发送纯文本与 Markdown 消息，内置 HMAC-SHA256 加签校验、凭证脱敏、配置自检与 Cordis 热重载工具注销。
+
 [![npm](https://img.shields.io/npm/v/dsh-dingtalk)](https://www.npmjs.com/package/dsh-dingtalk) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk) [![total downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-dingtalk-total-downloads.svg)](https://www.npmjs.com/package/dsh-dingtalk)
 
 **[安装使用](#安装) · [使用流程](#开始使用) · [完整说明](https://github.com/STARDUSTLC666/dsh-dingtalk/blob/main/docs/REFERENCE.zh.md)**

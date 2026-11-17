@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "钉钉",
-    "description": "向钉钉自定义群机器人发送 Markdown 与纯文本通知，支持 HMAC-SHA256 加签校验与凭证脱敏。"
+    "description": "向钉钉自定义群机器人发送 Markdown 与纯文本通知，支持 HMAC-SHA256 加签校验、凭证脱敏与配置自检。"
   }
 }
