@@ -1,5 +1,10 @@
 # 更新记录
 
+## 0.4.1 (2026-11-18)
+
+- 同步 `@stardustlc/dsh-updates` 0.2.3：侧边栏工作台平时默认隐藏底部更新栏（零高度占用），仅在检测到兼容新版本或执行更新时浮现单行精简提示条；完整更新设置与检查入口统一保留在 DSH「插件」详情页底部。
+- Sync `@stardustlc/dsh-updates` 0.2.3: keep the sidebar workbench update footer hidden by default when up-to-date, surfacing a single-line compact strip only for actionable updates or active jobs while retaining full controls in native Plugin Details.
+
 ## 0.4.0 (2026-11-18)
 
 - 新增零外部依赖的宿主原生 `Config` 设置表单声明（`webhook` 与 `secret` 自动脱敏且修改即热生效无需重启），优化首次未配置提示，并补齐面向日常场景的三步使用流程与可复制话术。
