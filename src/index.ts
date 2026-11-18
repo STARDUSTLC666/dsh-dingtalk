@@ -1,8 +1,10 @@
 import { registerUpdates } from '@stardustlc/dsh-updates'
 import { describeWebhookProblem, resolveDingTalkConfig, DINGTALK_SECRET_ENV, type DingTalkConfig } from './config.js'
 import { DingTalkClient } from './client.js'
+import { Config as DingTalkConfigSchema, liveConfig } from './host-config.js'
 import type { DingTalkNotifyArgs, DingTalkNotifyResult, DingTalkTextArgs } from './types.js'
 
+export const Config = DingTalkConfigSchema
 export const name = 'tool-dingtalk'
 export const inject = ['tools']
 export type Config = DingTalkConfig
@@ -61,10 +63,11 @@ function renderNotify(value: DingTalkNotifyResult): TextBlock[] {
 export function apply(ctx: any, config: Config = {}): void {
   registerUpdates(ctx, { name: "dsh-dingtalk" })
 
+  const live = liveConfig((config ?? {}) as DingTalkConfig)
   let client: DingTalkClient | null = null
   let fingerprint = ''
   const getClient = (): DingTalkClient => {
-    const resolved = resolveDingTalkConfig(config)
+    const resolved = resolveDingTalkConfig(live)
     const fp = JSON.stringify(resolved)
     if (client === null || fp !== fingerprint) {
       client = new DingTalkClient(resolved)
@@ -88,7 +91,7 @@ export function apply(ctx: any, config: Config = {}): void {
 
   registerTool({
     name: 'dingtalk_notify',
-    description: '向配置的钉钉群发送一条 Markdown 消息（单向通知）。title 为标题，text 为 Markdown 正文；需先在 profile 的 cordis.patch.yml 配置 webhook（与可选 secret 加签密钥）。',
+    description: '向配置的钉钉群发送一条 Markdown 消息（单向通知）。title 为标题，text 为 Markdown 正文；需先在 DSH「设置 → 插件 → 钉钉」或 profile 的 cordis.patch.yml 配置 webhook（与可选 secret 加签密钥）。',
     parameters: compileParameters({
       title: { type: 'string', required: true, description: '消息标题（显示在钉钉卡片顶部）' },
       text: { type: 'string', required: true, description: 'Markdown 正文内容' },
@@ -143,7 +146,7 @@ export function apply(ctx: any, config: Config = {}): void {
         }
         if (rec.ok !== true) {
           lines.push('', '下一步：')
-          lines.push('  · 在 profile 的 cordis.patch.yml 里覆盖 tool-dingtalk 行，填完整 webhook（含 access_token）；secret 建议放环境变量 DSH_DINGTALK_SECRET，改完重启 DSH。')
+          lines.push('  · 在 DSH「设置 → 插件 → 钉钉（dsh-dingtalk）」直接填写完整 webhook（含 access_token）与可选 secret（保存即生效，无需重启）；或在 profile 的 cordis.patch.yml 里覆盖 tool-dingtalk 行，secret 也可放环境变量 DSH_DINGTALK_SECRET。')
           lines.push('  · 发送失败时先看错误里的钉钉 errcode：310000 是加签不匹配，120001 是 token 失效，按提示改配置后重新运行 dingtalk_health。')
         }
         return oneText(lines.join('\n'))
@@ -153,21 +156,21 @@ export function apply(ctx: any, config: Config = {}): void {
       const checks: Array<Record<string, unknown>> = []
       let ok = true
       // 自检只做本地校验：既不发消息，也不触网，避免「自检」把告警群刷屏。
-      const webhook = typeof config?.webhook === 'string' ? config.webhook.trim() : ''
+      const webhook = typeof live?.webhook === 'string' ? live.webhook.trim() : ''
       const webhookProblem = describeWebhookProblem(webhook)
       if (webhookProblem === undefined) {
         checks.push({ name: 'webhook', ok: true, detail: '已配置（https://oapi.dingtalk.com/robot/send?access_token=***）' })
       } else {
         ok = false
-        checks.push({ name: 'webhook', ok: false, detail: webhookProblem + '：请从钉钉群「自定义机器人」设置里复制完整地址，填到 tool-dingtalk 行的 webhook 后重启' })
+        checks.push({ name: 'webhook', ok: false, detail: webhookProblem + '：请从钉钉群「自定义机器人」设置里复制完整地址，填到 DSH「设置 → 插件 → 钉钉」的 webhook（保存即生效）或 cordis.patch.yml 的 tool-dingtalk 行' })
       }
-      const configuredSecret = typeof config?.secret === 'string' ? config.secret.trim() : ''
+      const configuredSecret = typeof live?.secret === 'string' ? live.secret.trim() : ''
       const envSecret = (process.env[DINGTALK_SECRET_ENV] ?? '').trim()
       if (configuredSecret !== '') checks.push({ name: '加签密钥', ok: true, detail: '已配置（加签模式，来源：配置里的 secret）' })
       else if (envSecret !== '') checks.push({ name: '加签密钥', ok: true, detail: '已配置（加签模式，来源：环境变量 ' + DINGTALK_SECRET_ENV + '）' })
       else checks.push({ name: '加签密钥', ok: true, detail: '未配置（关键词/IP 白名单模式；若机器人开启加签，发送会返回 310000）' })
       try {
-        const resolved = resolveDingTalkConfig(config)
+        const resolved = resolveDingTalkConfig(live)
         checks.push({ name: '请求超时', ok: true, detail: resolved.timeoutMs + 'ms（1000-60000，可用 timeoutMs 调整）' })
       } catch {
         checks.push({ name: '请求超时', ok: true, detail: '默认 10000ms（webhook 未就绪时不做完整解析）' })
@@ -187,6 +190,7 @@ export function apply(ctx: any, config: Config = {}): void {
 }
 
 export { resolveDingTalkConfig, describeWebhookProblem, DINGTALK_SECRET_ENV, DEFAULT_TIMEOUT_MS, clampInt } from './config.js'
+export { liveConfig, createVolatile, HostValidationError, type HostSchemaNode, type HostSchemaMeta, type VolatileRef } from './host-config.js'
 export { DingTalkClient, DingTalkError, dingTalkErrorMessage } from './client.js'
 export type { FetchLike, FetchLikeResponse, DingTalkClientOptions } from './client.js'
 export { computeDingTalkSign, signedUrl, dingTalkTimestamp } from './sign.js'

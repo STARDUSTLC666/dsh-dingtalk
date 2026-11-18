@@ -2,142 +2,115 @@
 
 [返回简介](../README.md) · [更新记录](../CHANGELOG.md) · [验证记录](VALIDATION.md)
 
-## 取消和送达状态
+## 最快 3 步用起来
 
-取消会终止正在等待的 HTTP 请求，包括响应体读取。超时无法证明远端未收到消息；先核对群记录再决定是否重发，插件不会自动重发。诊断错误会隐藏机器人凭据与签名。
+### 第 1 步：在钉钉群拿到 Webhook 与加签密钥
 
-## 工具一览
+使用钉钉【自定义机器人】，**无需企业自建应用或管理员审批**：
 
-| 工具 | 作用 |
-|---|---|
-| `dingtalk_notify` | 向配置的钉钉群发一条 **Markdown** 消息（`title` 标题 + `text` Markdown 正文） |
-| `dingtalk_text` | 向配置的钉钉群发一条 **纯文本** 消息（`content`） |
-
-示例对话：
-
-> 帮我给钉钉群发一条消息：标题「构建完成」，正文「流水线 #123 已通过 ✅」。
-
-## 安装
-
-```sh
-dsh plugin --profile web add dsh-dingtalk
-```
-
-装好后重启 `dsh web`。插件自带空配置，**不会弄崩启动**；配置前调用任何 `dingtalk_*` 工具都会返回明确的中文配置提示。
-
-## 卸载
-
-```bash
-dsh plugin --profile web remove dsh-dingtalk
-```
-
-卸载后重启 Web 服务。如需彻底清理，可再手动删除自己 profile `cordis.patch.yml` 中覆盖的插件行。
-
-## 第一步：拿到 webhook 与加签密钥
-
-用钉钉【自定义机器人】方式，**不需要企业应用、不需要管理员权限**：
-
-1. 打开目标钉钉群 → **群设置** → **智能群助手** → **添加机器人** → **自定义（通过 Webhook 接入自定义服务）**
-2. 机器人名称随意，**安全设置勾选「加签」**，完成
-3. 复制两样东西：
+1. 打开目标钉钉群 → **群设置** → **智能群助手** → **添加机器人** → **自定义（通过 Webhook 接入自定义服务）**。
+2. 填写机器人名称，**安全设置勾选「加签」**（推荐只勾「加签」，避免关键词误拦）。
+3. 复制两项信息：
    - **Webhook 地址**：形如 `https://oapi.dingtalk.com/robot/send?access_token=xxxx`
-   - **加签密钥（secret）**：形如 `SECxxxx`（勾选「加签」后才会出现）
+   - **加签密钥（secret）**：形如 `SECxxxx`
 
-> 安全设置推荐只勾选「加签」。如果同时勾选了「自定义关键词」，机器人会校验消息里是否包含关键词——那是钉钉服务端行为，本插件不处理（见「已知限制」）。
+### 第 2 步：在 DSH 中填写配置（两种方式任选）
 
-## 配置
+**方式 A（推荐）：DSH 原生设置面板（保存立即生效，无需重启）**
 
-在你 profile 的 `cordis.patch.yml` 里覆盖 `tool-dingtalk` 行（在 `$DSH_HOME/profiles/<name>/` 下），然后重启：
+打开 **DSH → 设置 → 插件 → 钉钉（`dsh-dingtalk`）**：
+- 在 `webhook` 填入完整机器人地址；
+- 在 `secret` 填入 `SEC...` 加签密钥（两个字段均按凭据脱敏保护，不会回显明文）。
+
+**方式 B：环境变量或 `cordis.patch.yml`（适合命令行 / 服务器部署）**
+
+```powershell
+# Windows PowerShell（推荐用环境变量保存加签密钥）
+$env:DSH_DINGTALK_SECRET = "SEC你的加签密钥"
+```
+
+或在 `$DSH_HOME/profiles/<name>/cordis.patch.yml` 覆盖 `tool-dingtalk` 行：
 
 ```yaml
 - id: tool-dingtalk
   config:
     webhook: https://oapi.dingtalk.com/robot/send?access_token=你的token
-    secret: SEC你的加签密钥        # 可选，但强烈建议；也可用环境变量 DSH_DINGTALK_SECRET
+    secret: SEC你的加签密钥        # 可选；省略时自动读取环境变量 DSH_DINGTALK_SECRET
+    timeoutMs: 10000              # 可选；单次请求超时毫秒数（1000–60000）
 ```
 
-### 完整配置项
+### 第 3 步：先自检，再发消息
 
-| 字段 | 默认 | 说明 |
-|---|---|---|
-| `webhook` | 必填 | 机器人完整 Webhook 地址（`?access_token=...`） |
-| `secret` | 空 | 加签密钥；省略时回退环境变量 `DSH_DINGTALK_SECRET`。不填=不加签 |
-| `timeoutMs` | `10000` | 请求超时毫秒数（1000–60000） |
+插件自带空配置启动保护，未填凭据时绝不弄崩宿主。配好后先让助手跑一次本地自检（不触网、不往群里发测试噪声），全绿即可投入日常使用。
 
-### 用环境变量存 secret
+---
 
-不想把密钥写进 YAML 的话，可以只写 `webhook`，然后设置环境变量：
+## 平时怎么对助手说（可直接复制的自然语言示例）
 
-```sh
-# Windows PowerShell
-$env:DSH_DINGTALK_SECRET = "SEC你的加签密钥"
-# 或系统环境变量里加一条 DSH_DINGTALK_SECRET
-```
+- **本地配置自检（零打扰）**
+  > 先运行钉钉自检，帮我确认 webhook 和加签状态正常。
+- **长任务结束自动发结构化日报 / 构建总结**
+  > 跑完本轮测试后，用 Markdown 给钉钉群发一份结果摘要（标题写「回归测试结果」，列出通过数、失败项与下一步建议）。
+- **发前人工把关（正式群防误发）**
+  > 帮我拟一条发往钉钉群的版本发布通知，先把标题和正文贴在对话里让我确认，我说「发送」后再发。
+- **简短纯文本提醒**
+  > 给钉钉群发一条纯文本消息：线上巡检已完成，全部服务正常。
 
-显式写在 YAML 里的 `secret` 优先于环境变量。
+---
 
-## 安全须知
+## 常见卡点自检
 
-- **webhook 就是群通知的钥匙**：知道它的人可以往群里发消息。请勿把 `cordis.patch.yml` 提交到任何 Git 仓库；`secret` 更推荐用环境变量 `DSH_DINGTALK_SECRET`。
-- 本插件**只做单向通知**（agent → 钉钉群），不会读取群里任何消息，也没有双向机器人能力。
-- 本插件不做任何联网上报；`secret` 只在内存中用于计算 HMAC 签名，签名拼进 URL 发给钉钉官方接口。
+遇到异常时先让助手执行 `dingtalk_health`（本地检查 URL 结构与密钥来源，不发网络请求）：
 
-## 加签算法（对照官方）
+| 现象 | 常见原因 | 一步修复 |
+| :--- | :--- | :--- |
+| `dsh-dingtalk 未配置：webhook …` | 尚未填写 `webhook` | 在 **DSH「设置 → 插件 → 钉钉」**粘贴完整 Webhook 并保存（立即生效） |
+| 自检提示 `缺少 access_token` / `主机不是 oapi.dingtalk.com` | Webhook 地址粘贴不全或粘错链接 | 回钉钉群「自定义机器人」设置重新复制完整 `https://oapi.dingtalk.com/robot/send?access_token=...` |
+| 返回 `310000` | `secret` 加签不匹配，或机器人同时勾选了「自定义关键词」 | 核对 `SEC...` 密钥；若启用了关键词，确认标题或正文包含该关键词 |
+| 返回 `120001` | `access_token` 已过期或被重置 | 重新复制群机器人的最新 Webhook 更新配置 |
+| 请求超时 | 网络慢或代理阻断，无法证明远端未收到 | **先查看钉钉群消息记录**；确认未送达再决定是否重发，必要时调大 `timeoutMs` |
+| 消息发出但排版异常 | 钉钉 Markdown 子集限制或单条超长 | 使用标题、列表、加粗与链接等常用语法；超长内容让助手分段发送 |
 
-`secret` 存在时，请求 URL 追加 `timestamp`（毫秒时间戳）与 `sign`：
+---
 
-```text
-stringToSign = timestamp + "
-" + secret
-sign = urlencode(base64(HmacSHA256(secret, stringToSign)))
-```
+## 配置项与工具参考
 
-与本插件 `computeDingTalkSign` 一致，等价于官方 Python 示例的 `urllib.parse.quote_plus(base64(...))`。
+### 配置字段
 
-## 已知限制
+| 字段 | 默认值 | 说明 |
+| :--- | :--- | :--- |
+| `webhook` | 必填 | 钉钉自定义机器人完整 Webhook 地址（含 `?access_token=...`），凭据脱敏，支持热更新 |
+| `secret` | 空 | HMAC-SHA256 加签密钥（`SEC...`）；留空时回退环境变量 `DSH_DINGTALK_SECRET` |
+| `timeoutMs` | `10000` | 请求超时毫秒数（范围 `1000`–`60000`） |
 
-- **仅单向通知**：不支持企业自建应用、不支持接收群消息 / 双向机器人（@机器人 回复等），这些是 v0.2+ 的方向。
-- **不支持自定义关键词校验的自动规避**：如果机器人在钉钉侧勾选了「自定义关键词」，消息必须包含关键词，否则钉钉返回错误（errcode 310000 也可能因此出现）。本插件把 310000 归因于加签，请同时检查关键词设置。
-- **无设置页**：v0.1 是「node 半身」，配置只能走 `cordis.patch.yml`（+ 环境变量）。Web 设置页在 v0.2+。
-- **消息类型**：目前只支持 Markdown（`dingtalk_notify`）与纯文本（`dingtalk_text`）两种；图片/Link/FeedCard/ActionCard 等类型后续再加。
-- **Markdown 渲染**：钉钉机器人 Markdown 语法与标准 Markdown 略有差异（如标题、链接），请按钉钉语法书写。
+### 注册工具清单
 
-## 故障排查
+| 工具 | 作用 | 说明 |
+| :--- | :--- | :--- |
+| `dingtalk_notify` | 发送 **Markdown** 卡片消息 | 参数：`title`（卡片标题）、`text`（Markdown 正文） |
+| `dingtalk_text` | 发送 **纯文本** 消息 | 参数：`content`（纯文本内容） |
+| `dingtalk_health` | 本地配置自检 | 校验 `webhook` 形态、加签来源与超时配置，不触网、不刷群 |
 
-先运行 `dingtalk_health`：它只在本地校验 webhook 形态与加签配置（不发消息、不触网）。
+### 安全、取消与送达边界
 
-| 现象 | 常见原因 | 处理 |
-| :-- | :-- | :-- |
-| `dsh-dingtalk 未配置：webhook …` | 没填 webhook | 在 profile 的 `cordis.patch.yml` 覆盖 `tool-dingtalk` 行，填完整地址后重启 |
-| 自检提示 `缺少 access_token` / `主机不是 oapi.dingtalk.com` | 地址复制不全，或粘贴了别的 URL | 从钉钉群「自定义机器人」设置里重新复制完整 webhook |
-| 返回 `310000` | 加签不匹配，或机器人同时启用了「自定义关键词」 | 核对 `secret`（建议环境变量 `DSH_DINGTALK_SECRET`）；关键词模式要保证消息包含关键词 |
-| 返回 `120001` | access_token 失效或被重置 | 重新复制机器人 webhook 覆盖配置 |
-| 请求超时 | 网络慢或代理问题 | 先核对群消息是否已收到，再决定是否重发；必要时调大 `timeoutMs` |
-| 消息发出但排版不对 | Markdown 语法或长度限制 | 精简正文；钉钉单条消息有长度上限，过长请分段发送 |
+- **单向通知与凭据脱敏**：仅从助手向钉钉群单向发送消息，不读取群聊天记录；报错信息自动将 `webhook`、`access_token`、`secret` 与 `sign` 脱敏为 `[已隐藏]`。
+- **取消与不自动重发**：会话取消会立即中止等待中的 HTTP 请求与响应读取；超时不会自动重试，避免群消息重复刷屏。
+- **加签算法**：当存在 `secret` 时，按钉钉官方规范计算 `timestamp + "\n" + secret` 的 `HmacSHA256` Base64 并 URL 编码追加到请求参数。
 
-## 错误码速查
+## 安装、卸载与开发
 
-| errcode | 含义 | 建议 |
-|---|---|---|
-| `0` | 成功 | — |
-| `310000` | 加签校验失败（也见上面关键词说明） | 检查 `secret` 是否填对、是否与机器人「加签」设置一致 |
-| `120001` | `access_token` 失效 | 到钉钉群重新复制 webhook 地址，覆盖 `webhook` |
-| 其他 | 服务端错误 | 看返回的 `errmsg` |
+```bash
+# 安装（桌面版把 web 换为 desktop）
+dsh plugin --profile web add dsh-dingtalk
 
-## 开发
+# 卸载
+dsh plugin --profile web remove dsh-dingtalk
 
-```sh
+# 本地构建与离线测试
 pnpm install
-pnpm run build   # tsc → lib/
-pnpm test        # 构建 + node --test（加签算法/配置解析/客户端封装/注册与中文报错）
+pnpm test
 ```
 
 ## 协议
 
-MIT。这是一个社区插件，与 DeepSeek 官方及钉钉官方无关；`@deepseek-ai/*` 为官方保留命名空间。
-
-## 相关插件
-
-- [dsh-calendar](https://github.com/STARDUSTLC666/dsh-calendar) — CalDAV 日历五件套
-- [dsh-dingtalk](https://github.com/STARDUSTLC666/dsh-dingtalk) — 钉钉群通知（零依赖）
-- [dsh-email](https://github.com/STARDUSTLC666/dsh-email) — 邮件六件套 + Web 设置页
+MIT。社区插件，与 DeepSeek 官方及钉钉官方无关；`@deepseek-ai/*` 为官方保留命名空间。

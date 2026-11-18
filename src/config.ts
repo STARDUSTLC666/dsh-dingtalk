@@ -26,7 +26,7 @@ export function resolveDingTalkConfig(config: DingTalkConfig | undefined): Resol
   const secret = (typeof raw.secret === 'string' ? raw.secret : '').trim() || (process.env[DINGTALK_SECRET_ENV] ?? '').trim()
   if (webhook === '') {
     throw new Error(
-      'dsh-dingtalk 未配置：webhook（钉钉机器人完整地址）未填写。请在 profile 的 cordis.patch.yml 中覆盖 tool-dingtalk 行并重启（见插件 README）',
+      'dsh-dingtalk 未配置：webhook（钉钉机器人完整地址）未填写。可在 DSH「设置 → 插件 → 钉钉（dsh-dingtalk）」直接填写 webhook（保存即生效，无需重启），或在 profile 的 cordis.patch.yml 中覆盖 tool-dingtalk 行（加签密钥可填 secret 或设环境变量 DSH_DINGTALK_SECRET，见插件 README）',
     )
   }
   return {

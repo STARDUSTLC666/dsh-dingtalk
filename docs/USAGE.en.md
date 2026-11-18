@@ -1,137 +1,116 @@
-# dsh-dingtalk usage guide
+# dsh-dingtalk Usage Guide
 
 [Overview](../README.en.md) · [Changelog](../CHANGELOG.md) · [Validation](VALIDATION.md)
 
-## Cancellation and delivery
+## Get Started in 3 Steps
 
-Cancellation aborts the HTTP wait, including response-body reads. A timeout does not prove the message was not received: check the group before retrying. The plugin never retries automatically and redacts robot credentials/signatures from errors.
+### Step 1: Create a Custom Robot in Your DingTalk Group
 
-## Tools
+Use DingTalk's **Custom Webhook Robot** — **no enterprise app or admin approval needed**:
 
-| Tool | Purpose |
-|---|---|
-| `dingtalk_notify` | Send a **Markdown** message to the configured DingTalk group (`title` heading + `text` Markdown body) |
-| `dingtalk_text` | Send a **plain-text** message to the configured DingTalk group (`content`) |
+1. Open your DingTalk group → **Group Settings** → **Smart Group Assistant** → **Add Robot** → **Custom (Webhook)**.
+2. Name the robot and check **Sign (加签)** under Security Settings (checking only "Sign" avoids unexpected keyword rejections).
+3. Copy both values:
+   - **Webhook URL**: `https://oapi.dingtalk.com/robot/send?access_token=xxxx`
+   - **Signing secret (`secret`)**: `SECxxxx`
 
-Example:
+### Step 2: Configure in DSH (Choose Either Option)
 
-> Send a message to the DingTalk group: title "Build complete", body "Pipeline #123 passed ✅".
+**Option A (Recommended): Native DSH Settings Form (Live Apply, No Restart)**
 
-## Installation
+Open **DSH → Settings → Plugins → DingTalk (`dsh-dingtalk`)**:
+- Paste the full robot URL into `webhook`.
+- Paste your `SEC...` signing key into `secret` (both fields use native secret masking so credentials are never echoed in plaintext).
 
-```sh
-dsh plugin --profile web add dsh-dingtalk
+**Option B: Environment Variable or `cordis.patch.yml` (CLI / Headless Setups)**
+
+```powershell
+# Windows PowerShell (recommended for keeping secrets out of files)
+$env:DSH_DINGTALK_SECRET = "SEC_YOUR_SIGNING_SECRET"
 ```
 
-After installing, restart `dsh web`. The plugin ships with an empty config and **won't crash startup**; calling any `dingtalk_*` tool before configuration returns a clear Chinese configuration hint.
-
-## Uninstall
-
-```bash
-dsh plugin --profile web remove dsh-dingtalk
-```
-
-Then restart the web service. To clean up fully, also remove the plugin entry from your profile `cordis.patch.yml` if you overrode it.
-
-## Step 1: Get the webhook and signing secret
-
-Use DingTalk's **custom robot** method — **no enterprise app or admin permission needed**:
-
-1. Open the target DingTalk group → **Group settings** → **Smart group assistant** → **Add robot** → **Custom (connect a custom service via Webhook)**
-2. The robot name is arbitrary; under **Security settings, check "Sign" (加签)**, then finish
-3. Copy two things:
-   - **Webhook URL**: like `https://oapi.dingtalk.com/robot/send?access_token=xxxx`
-   - **Signing secret (secret)**: like `SECxxxx` (only appears after checking "Sign")
-
-> For security settings it's recommended to check only "Sign". If you also check "Custom keywords", the robot validates whether the message contains the keyword — that's DingTalk server-side behavior, not handled by this plugin (see "Known limitations").
-
-## Configuration
-
-In your profile's `cordis.patch.yml` (under `$DSH_HOME/profiles/<name>/`), override the `tool-dingtalk` line, then restart:
+Or override `tool-dingtalk` in `$DSH_HOME/profiles/<name>/cordis.patch.yml`:
 
 ```yaml
 - id: tool-dingtalk
   config:
-    webhook: https://oapi.dingtalk.com/robot/send?access_token=你的token
-    secret: SEC你的加签密钥        # 可选，但强烈建议；也可用环境变量 DSH_DINGTALK_SECRET
+    webhook: https://oapi.dingtalk.com/robot/send?access_token=YOUR_TOKEN
+    secret: SEC_YOUR_SIGNING_SECRET   # optional; falls back to DSH_DINGTALK_SECRET
+    timeoutMs: 10000                  # optional; timeout in ms (1000–60000)
 ```
 
-### Full configuration
+### Step 3: Run a Silent Self-Check Before Sending
+
+The plugin ships with an empty config and never crashes startup. Ask the assistant to run a quick offline check first (zero network traffic, zero group noise), then start sending real notifications.
+
+---
+
+## Copy-Ready Prompts for Everyday Work
+
+- **Silent first-run health check**
+  > Run a DingTalk health check and confirm my webhook and signing secret are ready without sending a message.
+- **Send a structured Markdown report after a task**
+  > After running the test suite, send a Markdown summary to our DingTalk group titled "Regression Report" with pass counts, failures, and next steps.
+- **Draft first, confirm before posting to an important group**
+  > Draft a release announcement for our DingTalk group. Show me the title and Markdown body here first, and wait for my confirmation before sending.
+- **Quick plain-text alert**
+  > Send a plain-text message to DingTalk: Daily health check finished; all services are green.
+
+---
+
+## Quick Troubleshooting Checklist
+
+Ask the assistant to run `dingtalk_health` first (validates URL structure and secret source locally without touching the network):
+
+| Symptom | Usual Cause | Quick Fix |
+| :--- | :--- | :--- |
+| `dsh-dingtalk 未配置：webhook …` | `webhook` is still empty | Paste the full Webhook URL in **DSH Settings → Plugins → DingTalk** and save (applies live) |
+| Health check reports missing `access_token` or wrong host | Incomplete URL pasted | Re-copy the full `https://oapi.dingtalk.com/robot/send?access_token=...` URL from DingTalk |
+| DingTalk returns `310000` | Signing `secret` mismatch, or "Custom keywords" is also checked | Verify `SEC...` secret; if keywords are enabled on DingTalk, include the keyword in the message |
+| DingTalk returns `120001` | `access_token` expired or reset | Copy the updated Webhook URL from DingTalk robot settings |
+| Request times out | Slow network or proxy; remote receipt is uncertain | **Check the DingTalk group history first** before resending; raise `timeoutMs` if needed |
+| Formatting looks off | DingTalk Markdown subset or message size limit | Stick to standard headings, lists, bold, and links; split very long messages |
+
+---
+
+## Configuration & Tool Reference
+
+### Configuration Fields
 
 | Field | Default | Description |
-|---|---|---|
-| `webhook` | required | Full webhook URL of the robot (`?access_token=...`) |
-| `secret` | empty | Signing secret; when omitted, falls back to the `DSH_DINGTALK_SECRET` env var. Empty = no signing |
-| `timeoutMs` | `10000` | Request timeout in milliseconds (1000–60000) |
+| :--- | :--- | :--- |
+| `webhook` | required | Full DingTalk custom robot Webhook URL (`?access_token=...`), secret-masked & live-updated |
+| `secret` | empty | HMAC-SHA256 signing secret (`SEC...`); falls back to `DSH_DINGTALK_SECRET` env var |
+| `timeoutMs` | `10000` | Request timeout in milliseconds (`1000`–`60000`) |
 
-### Store the secret in an environment variable
+### Registered Tools
 
-If you don't want to write the secret into YAML, write only `webhook` and set an environment variable:
+| Tool | Purpose | Notes |
+| :--- | :--- | :--- |
+| `dingtalk_notify` | Send a **Markdown** card message | Args: `title` (card header), `text` (Markdown body) |
+| `dingtalk_text` | Send a **plain-text** message | Args: `content` (text body) |
+| `dingtalk_health` | Offline configuration check | Verifies `webhook` shape, signing mode, and timeout without network calls |
 
-```sh
-# Windows PowerShell
-$env:DSH_DINGTALK_SECRET = "SEC你的加签密钥"
-# 或系统环境变量里加一条 DSH_DINGTALK_SECRET
-```
+### Safety, Cancellation & Delivery Guarantees
 
-An explicit `secret` in YAML takes precedence over the environment variable.
+- **One-way & redacted**: Posts outbound notifications only (never reads group messages) and redacts `webhook`, `access_token`, `secret`, and `sign` from all error messages.
+- **Cancellation without auto-retry**: Aborting a turn immediately cancels the in-flight HTTP request and body read. Timeouts never auto-retry so groups are never spammed.
+- **Official signing**: Computes `urlencode(base64(HmacSHA256(secret, timestamp + "\n" + secret)))` matching DingTalk's official specification.
 
-## Security notes
+## Install, Uninstall & Development
 
-- **The webhook is the key to group notifications**: anyone who knows it can post to the group. Don't commit `cordis.patch.yml` to any Git repo; for the `secret`, prefer the `DSH_DINGTALK_SECRET` env var.
-- This plugin is **one-way notification only** (agent → DingTalk group); it never reads messages from the group and has no two-way bot capability.
-- This plugin performs no outbound telemetry; the `secret` is used in memory only to compute an HMAC signature, which is appended to the URL and sent to DingTalk's official endpoint.
+```bash
+# Install (use desktop instead of web for DSH Desktop)
+dsh plugin --profile web add dsh-dingtalk
 
-## Signing algorithm (matches the official one)
+# Uninstall
+dsh plugin --profile web remove dsh-dingtalk
 
-When a `secret` is present, the request URL appends `timestamp` (millisecond timestamp) and `sign`:
-
-```text
-stringToSign = timestamp + "
-" + secret
-sign = urlencode(base64(HmacSHA256(secret, stringToSign)))
-```
-
-Identical to this plugin's `computeDingTalkSign`, equivalent to `urllib.parse.quote_plus(base64(...))` in the official Python example.
-
-## Known limitations
-
-- **One-way notification only**: no support for enterprise self-built apps, no receiving group messages / two-way bots (@robot replies, etc.); these are v0.2+ directions.
-- **No automatic workaround for custom keyword validation**: if the robot checks "Custom keywords" on DingTalk's side, messages must contain the keyword or DingTalk returns an error (errcode 310000 can also appear for this reason). This plugin attributes 310000 to signing; please also check the keyword setting.
-- **No settings page**: v0.1 is a "node half-body"; configuration only via `cordis.patch.yml` (+ env var). A Web settings page is planned for v0.2+.
-- **Message types**: currently only Markdown (`dingtalk_notify`) and plain text (`dingtalk_text`); image / Link / FeedCard / ActionCard etc. come later.
-- **Markdown rendering**: DingTalk robot Markdown syntax differs slightly from standard Markdown (e.g., headings, links); write according to DingTalk's syntax.
-
-## Error code reference
-
-| errcode | Meaning | Suggestion |
-|---|---|---|
-| `0` | Success | — |
-| `310000` | Signing validation failed (see the keyword note above) | Check that `secret` is correct and matches the robot's "Sign" setting |
-| `120001` | `access_token` expired | Re-copy the webhook URL from the DingTalk group and overwrite `webhook` |
-| other | Server error | Check the returned `errmsg` |
-
-## Development
-
-```sh
+# Build & run offline tests
 pnpm install
-pnpm run build   # tsc → lib/
-pnpm test        # 构建 + node --test（加签算法/配置解析/客户端封装/注册与中文报错）
+pnpm test
 ```
-
-## Troubleshooting
-
-Run `dingtalk_health` first: it validates the webhook shape and signing config locally (no messages, no network calls).
-
-| Symptom | Usual cause | What to do |
-| :-- | :-- | :-- |
-| `dsh-dingtalk 未配置：webhook …` | No webhook configured | Override the `tool-dingtalk` row in the profile's `cordis.patch.yml` with the full URL, then restart |
-| Health reports a missing `access_token` or a non-DingTalk host | URL copied incompletely or from elsewhere | Re-copy the full webhook from the DingTalk group's custom robot settings |
-| Response `310000` | Sign mismatch, or the robot also enforces a keyword | Check `secret` (prefer the `DSH_DINGTALK_SECRET` env var); in keyword mode the message must contain the keyword |
-| Response `120001` | `access_token` expired or reset | Re-copy the robot webhook and update the config |
-| Request times out | Slow network or proxy | Check the group first to see whether the message arrived before resending; raise `timeoutMs` if needed |
-| Message arrives but renders badly | Markdown dialect or length limits | Simplify the body; DingTalk caps a single message, so split long content |
 
 ## License
 
-MIT. This is a community plugin, not affiliated with DeepSeek or DingTalk; `@deepseek-ai/*` is an officially reserved namespace.
+MIT. Community plugin, not affiliated with DeepSeek or DingTalk; `@deepseek-ai/*` is an officially reserved namespace.

@@ -1,5 +1,10 @@
 # 更新记录
 
+## 0.4.0 (2026-11-18)
+
+- 新增零外部依赖的宿主原生 `Config` 设置表单声明（`webhook` 与 `secret` 自动脱敏且修改即热生效无需重启），优化首次未配置提示，并补齐面向日常场景的三步使用流程与可复制话术。
+- Export a zero-dependency native DSH `Config` schema with secret masking and live `volatile` reload for `webhook`, `secret`, and `timeoutMs`, alongside clearer first-run setup hints and human-first workflow docs.
+
 ## 0.3.14 (2026-11-18)
 
 - 更新区底部新增克制、无打扰的 GitHub 点赞与问题反馈快捷链接，并完善中英文检索关键词。
