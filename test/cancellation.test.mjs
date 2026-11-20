@@ -59,3 +59,16 @@ test('HTTP failures cannot echo the webhook token or signing credentials', async
     return true
   })
 })
+
+test('HTTP diagnostic limits cannot expose a truncated credential prefix', async () => {
+  for (const credential of ['SYNTHETIC_TOKEN', 'SYNTHETIC_SIGNING_SECRET']) {
+    const client = new DingTalkClient({ webhook, secret: 'SYNTHETIC_SIGNING_SECRET', fetchImpl: async () => ({
+      ok: false, status: 502, json: async () => ({}), text: async () => 'x'.repeat(195) + credential,
+    }) })
+    await assert.rejects(() => client.sendText('example'), error => {
+      assert.match(error.message, /HTTP 502/)
+      assert.ok(!error.message.includes(credential.slice(0, 5)), 'redaction must happen before truncation')
+      return true
+    })
+  }
+})
