@@ -1,5 +1,11 @@
 # 更新记录
 
+## 0.4.8 (2026-11-23)
+
+- 修复非法 `webhook` URL 直接发信时早于 `try/catch` 抛出原始 `TypeError` 的问题，现统一包装为带中文排查指引且不泄漏凭据的 `DingTalkError`。
+- 修正 `docs/REFERENCE` 中英文互跳链接与兼容小版本/补丁自动更新策略文案。
+- Wrap invalid `webhook` URL errors in `DingTalkClient` as guidance-rich, redacted `DingTalkError` instances instead of raw `TypeError`, and update reference doc language links and update policy wording.
+
 ## 0.4.7 (2026-11-20)
 
 - 升级共享更新组件至 0.2.10，移除跨插件右下角浮动提醒，保留工作台及插件详情页更新控制。

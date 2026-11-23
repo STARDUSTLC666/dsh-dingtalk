@@ -67,7 +67,12 @@ export class DingTalkClient {
   private async post(payload: unknown, signal?: AbortSignal): Promise<DingTalkSendResult> {
     signal?.throwIfAborted()
     const url = signedUrl(this.webhook, this.secret || undefined)
-    const parsedUrl = new URL(url)
+    let parsedUrl: URL
+    try {
+      parsedUrl = new URL(url)
+    } catch {
+      throw new DingTalkError('钉钉机器人 webhook 地址无效：请填写完整的 https://oapi.dingtalk.com/robot/send?access_token=... 地址（可在 DSH「设置 → 插件 → 钉钉」更正并保存，或运行 dingtalk_health 自检）。')
+    }
     const redact = (text: string) => [url, this.webhook, this.secret, parsedUrl.searchParams.get('access_token'), parsedUrl.searchParams.get('sign')]
       .filter((value): value is string => typeof value === 'string' && value !== '')
       .reduce((safe, value) => safe.replaceAll(value, '[已隐藏]').replaceAll(encodeURIComponent(value), '[已隐藏]'), text)

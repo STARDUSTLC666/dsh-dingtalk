@@ -75,3 +75,25 @@ test('dingTalkErrorMessage 直接输出中文', () => {
   assert.match(dingTalkErrorMessage(310000, ''), /加签/)
   assert.match(dingTalkErrorMessage(120001, ''), /token/)
 })
+
+test('非法 webhook URL 直接发信时抛包装后的 DingTalkError 而非原始 TypeError', async () => {
+  let fetched = false
+  const client = new DingTalkClient({
+    webhook: 'not-a-valid-url-with-secret-token',
+    secret: 'SEC_LEAK_GUARD',
+    fetchImpl: async () => { fetched = true; return okResponse({ errcode: 0, errmsg: 'ok' }) },
+  })
+  await assert.rejects(
+    () => client.sendText('hello'),
+    (err) => {
+      assert.ok(err instanceof DingTalkError)
+      assert.match(err.message, /webhook 地址无效/)
+      assert.match(err.message, /dingtalk_health/)
+      assert.ok(!err.message.includes('not-a-valid-url-with-secret-token'))
+      assert.ok(!err.message.includes('SEC_LEAK_GUARD'))
+      return true
+    },
+  )
+  await assert.rejects(() => client.sendMarkdown('t', 'body'), (err) => err instanceof DingTalkError)
+  assert.equal(fetched, false)
+})
