@@ -32,6 +32,23 @@ test('dingtalk_health：webhook 粘错时 ok=false 且指出具体问题', async
   assert.match(text, /310000/)
 })
 
+test('发送工具在触网前拒绝非钉钉 webhook', async () => {
+  const ctx = fakeCtx()
+  apply(ctx, { webhook: 'https://example.com/robot/send?access_token=fixture' })
+  const oldFetch = globalThis.fetch
+  let fetchCalls = 0
+  globalThis.fetch = async () => { fetchCalls++; throw new Error('unexpected request') }
+  try {
+    const notify = ctx.tools.defs.find((d) => d.name === 'dingtalk_notify')
+    const text = ctx.tools.defs.find((d) => d.name === 'dingtalk_text')
+    await assert.rejects(() => notify.execute({ title: 'title', text: 'body' }), /webhook 配置无效.*oapi\.dingtalk\.com/)
+    await assert.rejects(() => text.execute({ content: 'body' }), /webhook 配置无效.*oapi\.dingtalk\.com/)
+    assert.equal(fetchCalls, 0)
+  } finally {
+    globalThis.fetch = oldFetch
+  }
+})
+
 test('dingtalk_health：区分 secret 来自配置还是环境变量', async () => {
   const ctx = fakeCtx()
   apply(ctx, { webhook: 'https://oapi.dingtalk.com/robot/send?access_token=t', secret: 'SEC123' })

@@ -68,6 +68,8 @@ export function apply(ctx: any, config: Config = {}): void {
   let fingerprint = ''
   const getClient = (): DingTalkClient => {
     const resolved = resolveDingTalkConfig(live)
+    const webhookProblem = describeWebhookProblem(resolved.webhook)
+    if (webhookProblem !== undefined) throw new Error('钉钉机器人 webhook 配置无效：' + webhookProblem)
     const fp = JSON.stringify(resolved)
     if (client === null || fp !== fingerprint) {
       client = new DingTalkClient(resolved)

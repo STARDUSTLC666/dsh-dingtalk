@@ -1,5 +1,11 @@
 # 更新记录
 
+## 0.4.9 (2026-11-25)
+
+- 两种发送工具均在触网前校验钉钉 webhook，拒绝错误地址。
+- Validate the configured DingTalk webhook before either sending tool can contact the network.
+
+
 ## 0.4.8 (2026-11-23)
 
 - 修复非法 `webhook` URL 直接发信时早于 `try/catch` 抛出原始 `TypeError` 的问题，现统一包装为带中文排查指引且不泄漏凭据的 `DingTalkError`。
