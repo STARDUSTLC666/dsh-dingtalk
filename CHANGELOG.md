@@ -1,5 +1,10 @@
 # 更新记录
 
+## 0.4.10 (2026-11-28)
+
+- 更新详情页现在会保留较新检查的结果，慢轮询返回时不再把版本或任务状态退回旧值。
+- Keep newer update-check results and job status when an older background request finishes later.
+
 ## 0.4.9 (2026-11-25)
 
 - 两种发送工具均在触网前校验钉钉 webhook，拒绝错误地址。
